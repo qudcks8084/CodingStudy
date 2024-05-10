@@ -48,4 +48,3 @@ public class Main1920 {
         return -1;
     }
 }
-[출처] 백준 1920 자바로 풀기   ,  수 찾기|작성자 JongJae
