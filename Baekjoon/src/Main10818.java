@@ -1,21 +1,32 @@
-import java.util.Scanner;
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.util.StringTokenizer;
 
 public class Main10818 {
-    public static void main(String[] args) {
-        Scanner sc = new Scanner(System.in);
+    public static void main(String[] args) throws Exception {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 
-        int a = sc.nextInt();
-        int b = 0;
-        int max = -1000001;
-        int min = 1000001;
+        boolean[] arr = new boolean[2000001];
 
-        for(int i = 0 ; i < a; i++){
-            b = sc.nextInt();
-            if( b > max)
-                max = b;
-            if( b < min)
-                min = b;
+        int N = Integer.parseInt(br.readLine());
+        StringTokenizer st = new StringTokenizer(br.readLine());
+        for(int i = 0 ; i < N ; i ++){
+            arr[Integer.parseInt(st.nextToken())+1000000] = true;
         }
-        System.out.println(Integer.toString(min) + " " + Integer.toString(max));
+
+        StringBuilder sb = new StringBuilder();
+        for(int i = 0 ; i < 2000000 ; i++){
+            if(arr[i]){
+                sb.append(i-1000000).append(" ");
+                break;
+            }
+        }
+        for(int i = 2000000 ; i >= 0 ; i--){
+            if(arr[i]){
+                sb.append(i-1000000);
+                break;
+            }
+        }
+        System.out.println(sb);
     }
 }
