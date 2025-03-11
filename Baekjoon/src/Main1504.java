@@ -8,11 +8,14 @@ import java.util.StringTokenizer;
 public class Main1504 {
 
     static class Vertex implements Comparable<Vertex>{
-        int v, w;
+        int v; // 위치
+        int w; // 가중치
+        int f; // A와 B를 flag로 관리
 
-        public Vertex(int v, int w) {
+        public Vertex(int v, int w, int f) {
             this.v = v;
             this.w = w;
+            this.f = f;
         }
 
         @Override
@@ -43,8 +46,8 @@ public class Main1504 {
             int s = Integer.parseInt(st.nextToken()) - 1;
             int e = Integer.parseInt(st.nextToken()) - 1;
             int w = Integer.parseInt(st.nextToken());
-            adjList[s].add(new Vertex(e, w));
-            adjList[e].add(new Vertex(s, w));
+            adjList[s].add(new Vertex(e, w, 0));
+            adjList[e].add(new Vertex(s, w, 0));
         }
 
         // 거쳐야 하는 2 정점을 입력받는다.
@@ -52,64 +55,46 @@ public class Main1504 {
         A = Integer.parseInt(st.nextToken()) - 1;
         B = Integer.parseInt(st.nextToken()) - 1;
 
-        // 총 3번의 다익스트라를 실행
-        // 시작점 1번 노드에서의 각 노드별 최단거리
-        // 중간점 A에서의 각 노드별 최단거리
-        // 중간점 B에서의 각 노드별 최단거리
-        int[] start_node = {0, A, B};
-        int[][] dp = new int[3][N];
-        for(int i = 0 ; i < 3 ; i ++){
+        // 최종 경로 확정 관리를 위한 2차원 visited
+        // 1번째 차원은 노드의 방문을 관리
+        // 2번째 차원은 A와 B노드의 방문을 관리
+        // 각 차원별로 최단 거리를 기록할 dp 배열을 생성
+        boolean[][] visited = new boolean[N][4];
+        int[][] dp = new int[N][4];
+        for(int i = 0 ; i < N ; i ++){
             Arrays.fill(dp[i], Integer.MAX_VALUE);
         }
 
-        for(int i = 0 ; i < 3 ; i++){
-            int start = start_node[i];
+        PriorityQueue<Vertex> pq = new PriorityQueue<>();
 
-            // 최종 경로 확정 관리를 위한 visited
-            boolean[] visited = new boolean[N];
+        dp[0][0] = 0;  // 시작 정점의 초기 거리
+        if (A == 0) pq.offer(new Vertex(0, 0, 1));
+        else pq.offer(new Vertex(0, 0, 0));
 
-            PriorityQueue<Vertex> pq = new PriorityQueue<>();
-            pq.offer(new Vertex(start, 0));
-
-            while (!pq.isEmpty()) {
-                Vertex cur = pq.poll();
-                int v = cur.v;
-                int w = cur.w;
-                if(visited[v]) continue;
-                visited[v] = true;
-                dp[i][v] = w;
-                for(Vertex next : adjList[v]){
-                    int n_v = next.v;
-                    int n_w = next.w;
-                    if(dp[i][n_v] > w + n_w){
-                        dp[i][n_v] = w + n_w;
-                        pq.offer(new Vertex(n_v, w + n_w));
-                    }
+        while (!pq.isEmpty()) {
+            Vertex cur = pq.poll();
+            int v = cur.v;
+            int w = cur.w;
+            int f = cur.f;
+            if(visited[v][f]) continue;
+            visited[v][f] = true;
+            dp[v][f] = w;
+            for(Vertex next : adjList[v]){
+                int n_v = next.v;
+                int n_w = next.w;
+                int n_f = f;
+                // A가 다음 위치라면
+                if(n_v == A) n_f |= 1;
+                // B가 다음 위치라면
+                if(n_v == B) n_f |= 2;
+                if(dp[n_v][n_f] > w + n_w){
+                    dp[n_v][n_f] = w + n_w;
+                    pq.offer(new Vertex(n_v, w + n_w, n_f));
                 }
             }
-
         }
 
-        // 기본 경로 2가지 계산
-        int path1 = dp[0][A] + dp[1][B] + dp[2][3]; // 0 -> A -> B -> N
-        int path2 = dp[0][B] + dp[2][A] + dp[1][3]; // 0 -> B -> A -> N
-
-        // 추가 경로: 0 -> A -> B -> A -> N
-        int path3 = dp[0][A] + dp[1][B] + dp[2][A] + dp[1][3];
-
-        // 추가 경로: 0 -> B -> A -> B -> N
-        int path4 = dp[0][B] + dp[2][A] + dp[1][B] + dp[2][3];
-
-        // 최소값 계산
-        int min_distance = Math.min(Math.min(path1, path2), Math.min(path3, path4));
-
-        // 모든 경로가 불가능한 경우 확인
-        if (min_distance >= Integer.MAX_VALUE) {
-            System.out.println(-1);
-        } else {
-            System.out.println(min_distance);
-        }
-
+        if(dp[N-1][3] == Integer.MAX_VALUE) System.out.println("-1");
+        else System.out.println(dp[N-1][3]);
     }
-
 }
