@@ -5,7 +5,11 @@ import java.util.StringTokenizer;
 public class Main6549_notSolved {
 
     static class Node{
-        long sum;           // 구간의 합
+        long[] min;         // 구간의 최소 높이와 width
+        long[] totalMin;    // 구간의 최소 높이
+        long[] prefixMin;   // 왼쪽에서 시작하는 최소
+        long[] suffixMin;   // 왼쪽에서 시작하는 최소
+        long sum;           // 구간의 최대 역역
         long maxSum;        // 최대값
         long prefixSum;     // 왼쪽에서 시작하는 최대합
         long suffixSum;     // 오른쪽에서 시작하는 최대합
