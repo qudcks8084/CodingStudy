@@ -1,8 +1,6 @@
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.StringTokenizer;
+import java.util.*;
 
 public class Main17136 {
 
@@ -41,7 +39,7 @@ public class Main17136 {
 
         if(minPaper == Integer.MAX_VALUE/10) System.out.println(-1);
         else System.out.println(minPaper);
-
+        
     }
 
     static void dfs(int depth, int numOfPaper, boolean[][] map){
