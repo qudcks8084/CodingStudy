@@ -9,7 +9,7 @@ public class Main5598 {
         char[] input = br.readLine().toCharArray();
         StringBuilder sb = new StringBuilder();
         for (char c : input) {
-            sb.append((char)('A' + (((c - 'A') + 23) % 26)));
+            sb.append((char)('A' + (((c - 'A') + 9) % 26)));
         }
         System.out.println(sb);
     }
